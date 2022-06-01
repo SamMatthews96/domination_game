@@ -5,15 +5,26 @@ using TMPro;
 
 public class BaseScript : MonoBehaviour
 {
+
     [SerializeField] private int maxHealth;
-    private int currentHealth;
+    [SerializeField] private int currentHealth;
     [SerializeField] private float rateOfRegen;
 
-    
+    public int MaxHealth
+    {
+        get { return maxHealth; }
+        set { maxHealth = value; }
+    }
+    public int CurrentHealth
+    {
+        get { return currentHealth; }
+        set { currentHealth = value; }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        currentHealth = maxHealth;
+        CurrentHealth = MaxHealth;
         updateHealthText();
         StartCoroutine(HealthIncrease());
     }
@@ -35,9 +46,10 @@ public class BaseScript : MonoBehaviour
     IEnumerator HealthIncrease()
     {
         while (true){
-            if (currentHealth < maxHealth)
+            Debug.Log("go");
+            if (CurrentHealth < MaxHealth)
             {
-                currentHealth++;
+                CurrentHealth++;
                 updateHealthText();
             }
             yield return new WaitForSeconds(rateOfRegen);
