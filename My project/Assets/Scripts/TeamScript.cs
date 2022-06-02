@@ -4,25 +4,33 @@ using UnityEngine;
 
 public class TeamScript : MonoBehaviour
 {
+    [SerializeField] private GameObject basePrefab;
+
     public int teamNumber;
     public float resources;
-    [SerializeField] private GameObject basePrefab;
-    // Start is called before the first frame update
-    void Start()
+    private List<BaseScript> bases = new();
+    private Color teamColor;
+
+    public Color TeamColor
     {
-        NewBase(new Vector2(teamNumber, teamNumber));
+        set { teamColor = value; }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
-    void NewBase(Vector2 position)
+
+
+    public void CreateBase(Vector2 position)
     {
         GameObject newBase = Instantiate(basePrefab,position,Quaternion.identity);
         BaseScript baseScript = newBase.GetComponent<BaseScript>();
-        baseScript.CurrentHealth = 0;
+        baseScript.TeamNumber = teamNumber;
+        SetBaseColor(baseScript);
+        bases.Add(baseScript);
+    }
+
+    void SetBaseColor(BaseScript baseScript)
+    {
+        SpriteRenderer renderer = baseScript.gameObject.GetComponent<SpriteRenderer>();
+        renderer.color = teamColor;
     }
 }

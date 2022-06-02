@@ -5,10 +5,13 @@ using TMPro;
 
 public class BaseScript : MonoBehaviour
 {
-
-    [SerializeField] private int maxHealth;
-    [SerializeField] private int currentHealth;
+    [SerializeField] private GameObject world;
     [SerializeField] private float rateOfRegen;
+    [SerializeField] private int maxHealth;
+
+    private WorldScript worldScript;
+    private int currentHealth;
+    private int teamNumber;
 
     public int MaxHealth
     {
@@ -20,40 +23,53 @@ public class BaseScript : MonoBehaviour
         get { return currentHealth; }
         set { currentHealth = value; }
     }
+    public int TeamNumber
+    {
+        get { return teamNumber; }
+        set { teamNumber = value; }
+    }
 
-    // Start is called before the first frame update
     void Start()
     {
+        worldScript = world.GetComponent<WorldScript>();
         CurrentHealth = MaxHealth;
-        updateHealthText();
+        UpdateHealthText();
         StartCoroutine(HealthIncrease());
     }
-
-    // Update is called once per frame
-    void Update()
+    void OnMouseDown()
     {
-        
+        TrySelectPlayerBase();
     }
 
-    void updateHealthText()
+    void UpdateHealthText()
     {
         GameObject canvas = gameObject.transform.Find("Canvas").gameObject;
         GameObject textObject = canvas.transform.Find("Health").gameObject;
         TextMeshProUGUI textMeshPro = textObject.GetComponent<TextMeshProUGUI>();
-        textMeshPro.text = currentHealth.ToString();
+        textMeshPro.text = CurrentHealth.ToString();
     }
-
     IEnumerator HealthIncrease()
     {
         while (true){
-            Debug.Log("go");
             if (CurrentHealth < MaxHealth)
-            {
-                CurrentHealth++;
-                updateHealthText();
-            }
+                ChangeHealth(1);
             yield return new WaitForSeconds(rateOfRegen);
         }
 
     }
+    
+    public void ChangeHealth(int delta)
+    {
+        CurrentHealth += delta;
+        UpdateHealthText();
+    }
+
+    private void TrySelectPlayerBase()
+    {
+        if (TeamNumber == 1)
+            worldScript.SelectedBase = gameObject;
+        
+          
+    }
 }
+
